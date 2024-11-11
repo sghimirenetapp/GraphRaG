@@ -1,0 +1,51 @@
+[default]
+MODEL_NAME = "gpt-4o-mini"
+TEMPERATURE = 0
+
+[mssql]
+DRIVER = "ODBC Driver 17 for SQL Server"
+SERVER = "db.epic-preprod.netapp.com"
+
+[azure]
+AZURE_API_VERSION = "2024-05-01-preview"
+AZURE_MODEL_NAME = "gpt-4o"
+
+[boundplatform]
+NODES = ["OSFamily", 
+        "OSType", 
+        "MajorOS", 
+        "OS", 
+        "BoundOSAffiliate", 
+        "OSAffiliate", 
+        "PlatformType", 
+        "PlatformFamily", 
+        "PlatformModel", 
+        "PlatformConfig", 
+        "BoundPlatformOS", 
+        "SoftwareLimitType", 
+        "BaseSoftwareLimits", 
+        "SoftwareLimits", 
+        "StorageArchitectureStack", 
+        "SoftwareLimitScope", 
+        "BoundPlatformOSSoftwareLimits"]
+
+[data]
+OSFamily = "home/sunil/Flask/flask-neo4j/data/OSFamily.csv"
+OSType = "data/OSType.csv"
+MajorOS = "data/MajorOS.csv"
+OS = "data/OS.csv"
+BoundOSAffiliate = "data/BoundOSAffiliate.csv"
+OSAffiliate = "data/OSAffiliate.csv"
+PlatformType = "data/PlatformType.csv"
+PlatformFamily = "data/PlatformFamily.csv"
+PlatformModel = "data/PlatformModel.csv"
+PlatformConfig = "data/PlatformConfig.csv"
+BoundPlatformOS = "data/BoundPlatformOS.csv"
+SoftwareLimitType = "data/SoftwareLimitType.csv"
+BaseSoftwareLimits = "data/BaseSoftwareLimits.csv"
+StorageArchitectureStack = "data/StorageArchitectureStack.csv"
+SoftwareLimits = "data/SoftwareLimits.csv"
+SoftwareLimitScope = "data/SoftwareLimitScope.csv"
+BoundPlatformOSSoftwareLimits = "data/BoundPlatformOSSoftwareLimits.csv"
+
+ 

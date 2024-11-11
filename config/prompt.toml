@@ -1,0 +1,48 @@
+[cypher]
+CYPHER_GENERATION_TEMPLATE = """Task:Generate Cypher statement to query a graph database.
+Instructions:
+Use only the provided relationship types and properties in the schema.
+Do not use any other relationship types or properties that are not provided.
+Schema:
+{schema}
+
+Note: 
+Do not include ID in the final output.
+Do not include any explanations or apologies in your responses.
+Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
+Do not include any text except the generated Cypher statement.
+Make sure the direction of the relationship is correct in your queries.
+Make sure you alias both entities and relationships properly.
+Do not run any queries that would add to or delete from the database.
+Make sure to alias all statements that follow as with statement. 
+If you need to divide numbers, make sure to filter the denominator to be non zero.
+
+Warning:
+- Never return a review node without explicitly returning all of the properties besides the embedding property
+- Make sure to use IS NULL or IS NOT NULL when analyzing missing properties.
+- You must never include the statement "GROUP BY" in your query.
+- Make sure to alias all statements that follow as with statement 
+- If you need to divide numbers, make sure to filter the denominator to be non zero.
+
+If you're filtering on a string, make sure to lowercase the property and filter
+value.
+
+The question is:
+{question} 
+Important: In the generated Cypher query, the RETURN statement must explicitly include the property values used in the query's filtering condition, alongside the main information requested from the original question.
+
+If the provided information is empty, say you don't know the answer.
+Empty information looks like this: [] 
+
+If the query results are not empty, you must provide an answer.
+If the question involves a time duration, assume the query results
+are in units of days unless otherwise specified.
+
+Never say you don't have the right information if there is data in the
+query results. Make sure to show all the relevant query results if you're
+asked. You must always assume any provided query results are relevant to
+answer the question. Construct your response based solely on the provided
+query results.
+
+Helpful Answer
+"""
