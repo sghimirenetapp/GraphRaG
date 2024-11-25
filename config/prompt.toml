@@ -1,48 +1,67 @@
-[cypher]
-CYPHER_GENERATION_TEMPLATE = """Task:Generate Cypher statement to query a graph database.
+[query]
+QUERY_TEMPLATE = """ Task: Generate a syntactically correct MSSQL Graph query to answer the user’s question.
 Instructions:
-Use only the provided relationship types and properties in the schema.
-Do not use any other relationship types or properties that are not provided.
+Use only the tables, columns, and relationships provided in the schema to construct the query.
+Avoid using any tables, columns, or relationships not listed in the schema.
+
 Schema:
 {schema}
 
-Note: 
-Do not include ID in the final output.
-Do not include any explanations or apologies in your responses.
-Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
-Do not include any text except the generated Cypher statement.
-Make sure the direction of the relationship is correct in your queries.
-Make sure you alias both entities and relationships properly.
-Do not run any queries that would add to or delete from the database.
-Make sure to alias all statements that follow as with statement. 
-If you need to divide numbers, make sure to filter the denominator to be non zero.
+Guidelines:
+- Only reference the columns explicitly provided in the schema.
+- Avoid ambiguous column references by fully qualifying table and column names.
+- Use the LIKE operator for filtering text fields instead of an exact match with '='.
+- Only include columns in the SELECT clause that directly answer the question and that are used in any filtering conditions.
+- Ensure correct edge (relationship) directionality in the query syntax.
+- Only create SELECT queries; do not include any commands that modify the database.
+- Do not use GROUP BY statements in the query.
+- Use IS NULL or IS NOT NULL for checking missing values in columns.
+- If performing division, ensure the denominator is filtered to exclude zero.
+- Use table and column aliases as needed for clarity and readability.
+- Structure complex queries with WITH statements if necessary to create temporary subsets.
+- Use `$node_id`, `$from_id` and `$to_id` parameters to generate query
 
-Warning:
-- Never return a review node without explicitly returning all of the properties besides the embedding property
-- Make sure to use IS NULL or IS NOT NULL when analyzing missing properties.
-- You must never include the statement "GROUP BY" in your query.
-- Make sure to alias all statements that follow as with statement 
-- If you need to divide numbers, make sure to filter the denominator to be non zero.
+Important:
+- Avoid using SELECT *; explicitly include only necessary columns in SELECT statements.
+- Ensure that all referenced columns exist within the specified schema.
+- Tailor the output to answer the user’s question with the most relevant information.
+- Only use WITH statements for temporary subsets; ensure all SELECT statements are single-line where possible.
 
-If you're filtering on a string, make sure to lowercase the property and filter
-value.
+Now, based on these guidelines, generate a query to answer the question:
+Question: {question}
+Generated Graph Query:
+"""
 
-The question is:
-{question} 
-Important: In the generated Cypher query, the RETURN statement must explicitly include the property values used in the query's filtering condition, alongside the main information requested from the original question.
+[response_generation]
+FINAL_RESPONSE_GENERATION_PROMPT = """
+You are an agent who will be provided with the user_input and the MsSQL Graph Query execution response from Database. You will have to generate the response based on those data.
 
-If the provided information is empty, say you don't know the answer.
-Empty information looks like this: [] 
+History: {history}
+User Input: {user_input}
+MsSQL Graph Query Response: {graph_query_response}
 
-If the query results are not empty, you must provide an answer.
-If the question involves a time duration, assume the query results
-are in units of days unless otherwise specified.
+Make the response natural and precise.
+"""
 
-Never say you don't have the right information if there is data in the
-query results. Make sure to show all the relevant query results if you're
-asked. You must always assume any provided query results are relevant to
-answer the question. Construct your response based solely on the provided
-query results.
+[sql_correction]
+CORRECT_TABLE_COLUMN_TEMPLATE = """
+You are an expert {dialect} graph expert. You are provided an MsSQL graph that tries to answer the user's question.
+However, it has some errors. You need to correct this {dialect} graph query.
 
-Helpful Answer
+Question:
+{question}
+
+Incorrect SQL Query:
+{prev_query}
+
+Error in Query:
+{suggestions}
+
+Only use these graph schemas as context to fix the query:
+{schema}
+
+IMPORTANT NOTE:
+- Only generate the correct MsSQL graph query without any comments.
+
+Corrected Query:
 """

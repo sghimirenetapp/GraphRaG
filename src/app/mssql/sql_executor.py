@@ -61,15 +61,18 @@ async def run_sql_query(connection_string: str, sql_query: str) -> Tuple[bool, d
             if results:
                 # Convert results into a pandas DataFrame
                 df = pd.DataFrame(results)
+                # Convert the DataFrame to a dictionary
+                output = df.to_dict("list")
                 status = True
             else:
-                df = pd.DataFrame()
+                output = {"error": "No data returned from the query."}
+
     except SQLAlchemyError as e:
         # Handle SQLAlchemy-related errors
         print(f"An error occurred: {e}")
-        df = pd.DataFrame()
-        
-    return status, df
+        output = {"error": str(e)}
+
+    return status, output
 
 class SqlConnector:
     def __init__(self, username: str, password: str, driver: str, server: str):

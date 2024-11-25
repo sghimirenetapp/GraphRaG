@@ -1,0 +1,50 @@
+[boundplatform]
+BOUNDPLATFORM_SCHEMA = """ 
+    -- OSFamilyNode (Node Table)
+    -- Stores general information about different OS families.
+
+    CREATE TABLE OSFamilyNode (
+        OSFamilyId INT PRIMARY KEY,              -- Unique identifier for each OS family
+        ManufacturerId INT,                      -- Identifier for the OS manufacturer
+        OSFamily NVARCHAR(100),                  -- Name of the OS family (e.g., Windows, Linux)
+        OSFamilyDescription NVARCHAR(255)        -- Description of the OS family
+    ) AS NODE;
+
+    -- Represents OS families, including manufacturer, name, and description.
+
+    -- OSTypeNode (Node Table)
+    -- Represents specific OS types or versions within an OS family.
+
+    CREATE TABLE OSTypeNode (
+        OSTypeId INT PRIMARY KEY,                -- Unique identifier for each OS type
+        OSFamilyId INT,                          -- Foreign key linking to OSFamilyNode
+        OSType NVARCHAR(100),                    -- Category/type of OS (e.g., Desktop, Server)
+        OSTypeName NVARCHAR(100),                -- Specific name or version (e.g., Windows 10, Ubuntu Server)
+        OrderBy INT                              -- Sorting order within the OS family
+    ) AS NODE;
+
+    -- Foreign Key Relationship: The OSFamilyId column links to OSFamilyNode to associate each OS type with an OS family.
+
+
+    -- OSFamily_OSType_Relationship (Edge Table)
+    -- Defines the relationship between OS families and their types.
+
+    CREATE TABLE OSFamily_OSType_Relationship (
+        EdgeId INT IDENTITY PRIMARY KEY,         -- Unique identifier for each edge
+        OSFamilyId INT,                          -- Source node: refers to OSFamilyNode(OSFamilyId)
+        OSTypeId INT,                            -- Target node: refers to OSTypeNode(OSTypeId)
+        CONSTRAINT FK_OSFamily FOREIGN KEY (OSFamilyId) REFERENCES OSFamilyNode(OSFamilyId),
+        CONSTRAINT FK_OSType FOREIGN KEY (OSTypeId) REFERENCES OSTypeNode(OSTypeId)
+    ) AS EDGE;
+
+    -- Purpose: Connects OSFamilyNode to relevant OSTypeNode entries, establishing the relationship between OS families and their specific types.
+
+    -- Sample Data Insertion
+    -- Here’s an example of how to insert a relationship between an OS family and an OS type:
+
+    INSERT INTO OSFamily_OSType_Relationship ($from_id, $to_id)
+    VALUES (
+        (SELECT $node_id FROM OSFamilyNode WHERE OSFamilyId = 1),   -- Source node ID
+        (SELECT $node_id FROM OSTypeNode WHERE OSTypeId = 1)        -- Target node ID
+    );
+"""

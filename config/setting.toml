@@ -48,4 +48,12 @@ SoftwareLimits = "data/SoftwareLimits.csv"
 SoftwareLimitScope = "data/SoftwareLimitScope.csv"
 BoundPlatformOSSoftwareLimits = "data/BoundPlatformOSSoftwareLimits.csv"
 
- 
+[model_parameters]
+MODEL_NAME = "gpt-4o-mini"
+TEMPERATURE = 0.1
+TOP_P_VALUE = 0.0
+TOP_K_VALUE = 1.2
+PRESENCE_PENALTY = 0
+FREQUENCY_PENALTY = 0
+MAX_TOKENS_TO_GENERATE = 250
+STOPWORDS = ["Human", "Instruction:", "</s>"]
